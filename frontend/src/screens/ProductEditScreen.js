@@ -16,7 +16,8 @@ const ProductEditScreen = ({ match, history }) => {
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState(0)
-  const [image, setImage] = useState('')
+  const [image_high, setImage] = useState('')
+  const [image_low, setThumbImage] = useState('')
   const [brand, setBrand] = useState('')
   const [category, setCategory] = useState('')
   const [countInStock, setCountInStock] = useState(0)
@@ -45,7 +46,8 @@ const ProductEditScreen = ({ match, history }) => {
       } else {
         setName(product.name)
         setPrice(product.price)
-        setImage(product.image)
+        setImage(product.image_high)
+        setThumbImage(product.image_low)
         setBrand(product.brand)
         setCategory(product.category)
         setCountInStock(product.countInStock)
@@ -54,7 +56,7 @@ const ProductEditScreen = ({ match, history }) => {
     }
   }, [dispatch, history, productId, product, successUpdate])
 
-  const uploadFileHandler = async (e) => {
+  const uploadHighImg = async (e) => {
     const file = e.target.files[0]
     const formData = new FormData()
     formData.append('image', file)
@@ -77,6 +79,29 @@ const ProductEditScreen = ({ match, history }) => {
     }
   }
 
+  const uploadLowImg = async (e) => {
+    const file = e.target.files[0]
+    const formData = new FormData()
+    formData.append('image', file)
+    setUploading(true)
+
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+
+      const { data } = await axios.post('/api/uploadl', formData, config)
+
+      setThumbImage(data)
+      setUploading(false)
+    } catch (error) {
+      console.error(error)
+      setUploading(false)
+    }
+  }
+
   const submitHandler = (e) => {
     e.preventDefault()
     dispatch(
@@ -84,7 +109,8 @@ const ProductEditScreen = ({ match, history }) => {
         _id: productId,
         name,
         price,
-        image,
+        image_low,
+        image_high,
         brand,
         category,
         description,
@@ -128,19 +154,36 @@ const ProductEditScreen = ({ match, history }) => {
               ></Form.Control>
             </Form.Group>
 
-            <Form.Group controlId='image'>
+            <Form.Group controlId='image_low'>
               <Form.Label>{t('image')}</Form.Label>
               <Form.Control
                 type='text'
                 placeholder={t('enter_image')}
-                value={image}
+                value={image_low}
+                onChange={(e) => setThumbImage(e.target.value)}
+              ></Form.Control>
+              <Form.File
+                id='image-file'
+                label={t('choose_file')}
+                custom
+                onChange={uploadLowImg}
+              ></Form.File>
+              {uploading && <Loader />}
+            </Form.Group>
+
+            <Form.Group controlId='image_high'>
+              <Form.Label>{t('image')}</Form.Label>
+              <Form.Control
+                type='text'
+                placeholder={t('enter_image')}
+                value={image_high}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
               <Form.File
                 id='image-file'
                 label={t('choose_file')}
                 custom
-                onChange={uploadFileHandler}
+                onChange={uploadHighImg}
               ></Form.File>
               {uploading && <Loader />}
             </Form.Group>
