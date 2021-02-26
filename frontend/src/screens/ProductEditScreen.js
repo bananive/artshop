@@ -155,7 +155,7 @@ const ProductEditScreen = ({ match, history }) => {
             </Form.Group>
 
             <Form.Group controlId='image_low'>
-              <Form.Label>{t('image')}</Form.Label>
+              <Form.Label>{t('image-low')}</Form.Label>
               <Form.Control
                 type='text'
                 placeholder={t('enter_image')}
@@ -172,7 +172,7 @@ const ProductEditScreen = ({ match, history }) => {
             </Form.Group>
 
             <Form.Group controlId='image_high'>
-              <Form.Label>{t('image')}</Form.Label>
+              <Form.Label>{t('image-high')}</Form.Label>
               <Form.Control
                 type='text'
                 placeholder={t('enter_image')}
